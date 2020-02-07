@@ -13,9 +13,17 @@ except Exception as e:
         d = webdrive.Firefox()
     except Exception as e:
         print('No web browsers installed! Please install Mozilla Firefox or Google Chrome!')
-d.get('https://www.worldometers.info/world-population/')
-print(d.find_element_by_css_selector('[rel="current_population"]').text)
+d.get('https://www.worldometers.info/coronavirus/')
+print(d.find_element_by_css_selector('[rel="maincounter-number"]').text)
 """
 def getCases():
-    url = 'https://countrymeters.info/en/World'
+    url = 'https://www.worldometers.info/coronavirus/'
+    html = urlopen(url)
+    soup = BeautifulSoup(html, 'html.parser')
+    return int(soup.find(id='maincounter-number').getText().replace(',', ''))
 
+def getDeaths():
+    url = 'https://www.worldometers.info/coronavirus/'
+    html = urlopen(url)
+    soup = BeautifulSoup(html, 'html.parser')
+    return int(soup.find(id='maincounter-number').getText().replace(',', ''))
