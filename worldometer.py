@@ -1,29 +1,36 @@
-# Uses code from https://github.com/carlos-menezes/worldometers.py/blob/master/worldometers.py
+import pandas as pd
 
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
-from selenium import webdriver
-
-# Snippet of code that I might have to fall back to
-"""
-try:
-    d = webdriver.Chrome()
-except Exception as e:
+def getPage():
     try:
-        d = webdrive.Firefox()
-    except Exception as e:
-        print('No web browsers installed! Please install Mozilla Firefox or Google Chrome!')
-d.get('https://www.worldometers.info/coronavirus/')
-print(d.find_element_by_css_selector('[rel="maincounter-number"]').text)
-"""
+        country_table = pd.read_html('https://www.worldometers.info/coronavirus')[0]
+    except urllib.error.URLError as e:
+        country_table = getPage()
+    return country_table
+
 def getCases():
-    url = 'https://www.worldometers.info/coronavirus/'
-    html = urlopen(url)
-    soup = BeautifulSoup(html, 'html.parser')
-    return int(soup.find(id='maincounter-number').getText().replace(',', ''))
+    country_table = getPage()
+    num = 0
+    for item in country_table['Total Cases'][:]:
+        num = item + num
+    return num
+
+def getRecovered():
+    country_table = getPage()
+    num = 0
+    for item in country_table['Total Recovered'][:]:
+        num = item + num
+    return num
+
+def getCritical():
+    country_table = getPage()
+    num = 0
+    for item in country_table['Total Critical'][:]:
+        num = item + num
+    return num
 
 def getDeaths():
-    url = 'https://www.worldometers.info/coronavirus/'
-    html = urlopen(url)
-    soup = BeautifulSoup(html, 'html.parser')
-    return int(soup.find(id='maincounter-number').getText().replace(',', ''))
+    country_table = getPage()
+    num = 0
+    for item in country_table['Total Deaths'][:]:
+        num = item + num
+    return num
